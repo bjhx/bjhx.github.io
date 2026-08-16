@@ -1,10 +1,51 @@
 /* ============================================================
    北京幻象集团官网 —— 纯静态版脚本
-   导航交互 / 滚动揭示动画 / 表单校验
+   主题切换 / 导航交互 / 滚动揭示动画 / 表单校验
    ============================================================ */
 
 (function () {
   'use strict';
+
+  /* ===== 深色模式切换 ===== */
+  var themeToggle = document.getElementById('theme-toggle');
+  var mThemeToggle = document.getElementById('m-theme-toggle');
+  var themeLabels = document.querySelectorAll('.theme-label, .m-theme-label');
+
+  function applyTheme(dark) {
+    var root = document.documentElement;
+    if (dark) {
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.removeAttribute('data-theme');
+    }
+    // 同步按钮文字（浅色模式下提示"切到深色"，深色模式下提示"切到浅色"）
+    themeLabels.forEach(function (el) {
+      el.textContent = dark ? '浅色' : '深色';
+    });
+    // 移动端按钮文字更长，单独处理
+    var mLabel = document.querySelector('.m-theme-label');
+    if (mLabel) mLabel.textContent = dark ? '浅色模式' : '深色模式';
+  }
+
+  function toggleTheme() {
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var next = !isDark;
+    // 平滑过渡类（首帧禁用，避免进入页面时闪动）
+    document.documentElement.classList.add('theme-anim');
+    applyTheme(next);
+    try {
+      localStorage.setItem('theme', next ? 'dark' : 'light');
+    } catch (e) {}
+    // 过渡结束后移除动画类
+    setTimeout(function () {
+      document.documentElement.classList.remove('theme-anim');
+    }, 350);
+  }
+
+  if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+  if (mThemeToggle) mThemeToggle.addEventListener('click', toggleTheme);
+  // 页面加载后同步按钮文字（与 head 内初始化脚本一致）
+  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark');
 
   /* ===== 导航栏滚动效果 ===== */
   var navbar = document.querySelector('.navbar');

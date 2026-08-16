@@ -7,6 +7,16 @@
   <meta name="description" content="北京幻象集团是一支由青少年因热爱自发组建的搞笑短视频团队。永远相信，实践会带来成长，创造会带来奇迹。" />
   <link rel="icon" type="image/svg+xml" href="assets/logo-huanxiang.png" />
   <link rel="stylesheet" href="css/style.css" />
+  <!-- 主题初始化：防闪烁，先于 CSS 执行 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('theme');
+        var dark = stored === 'dark' || (!stored && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+      } catch (e) { /* 隐私模式等异常时保持浅色 */ }
+    })();
+  </script>
 </head>
 <body>
 
@@ -55,6 +65,11 @@
       </ul>
       <div class="nav-right">
         <a href="contact.html" class="nav-cta">合作咨询</a>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="切换深色模式" title="切换深色/浅色模式">
+          <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3L19 19M19 5l-1.7 1.7M6.7 17.3L5 19"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24"><path d="M20.5 14.1A8.5 8.5 0 1 1 9.9 3.5a7 7 0 0 0 10.6 10.6z"/></svg>
+          <span class="theme-label">深色</span>
+        </button>
         <button class="hamburger" aria-label="切换菜单">
           <span class="bars"><span class="bar"></span><span class="bar"></span><span class="bar"></span></span>
         </button>
@@ -68,6 +83,13 @@
         <li><a href="works.html">作品</a></li>
         <li><a href="resources.html">资源</a></li>
         <li><a href="contact.html">联系我们</a></li>
+        <li style="list-style:none;">
+          <button type="button" class="m-theme-toggle" id="m-theme-toggle" aria-label="切换深色模式">
+            <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3L19 19M19 5l-1.7 1.7M6.7 17.3L5 19"/></svg>
+            <svg class="icon-moon" viewBox="0 0 24 24"><path d="M20.5 14.1A8.5 8.5 0 1 1 9.9 3.5a7 7 0 0 0 10.6 10.6z"/></svg>
+            <span class="m-theme-label">深色模式</span>
+          </button>
+        </li>
         <li><a href="https://clocksalt1312.github.io/jobs.html" target="_blank" rel="noopener" class="m-cta" style="background:linear-gradient(90deg, #0284c7, #0369a1);">加入我们</a></li>
       </ul>
     </div>
