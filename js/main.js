@@ -60,6 +60,33 @@
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 
+  /* ===== 全站光标辉光（指针跟随的柔和环境光） ===== */
+  (function initCursorGlow() {
+    // 仅桌面/鼠标设备启用；触屏没有 hover 光标，跟随反而突兀
+    var mqFine = window.matchMedia && window.matchMedia('(pointer: fine)');
+    if (!mqFine || !mqFine.matches) return;
+    if (document.getElementById('site-cursor-glow')) return;
+    var glow = document.createElement('div');
+    glow.id = 'site-cursor-glow';
+    glow.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(glow);
+    var x = window.innerWidth * 0.5;
+    var y = window.innerHeight * 0.2;
+    var pending = false;
+    function apply() {
+      glow.style.transform = 'translate3d(' + Math.round(x) + 'px,' + Math.round(y) + 'px,0)';
+    }
+    function onMove(e) {
+      x = e.clientX; y = e.clientY;
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(function () { pending = false; apply(); });
+    }
+    window.addEventListener('mousemove', onMove, { passive: true });
+    window.addEventListener('resize', function () { x = window.innerWidth * 0.5; y = window.innerHeight * 0.2; apply(); });
+    apply();
+  })();
+
   /* ===== 移动端菜单 ===== */
   var hamburger = document.querySelector('.hamburger');
   if (hamburger && navbar) {

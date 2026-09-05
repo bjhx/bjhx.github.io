@@ -12,7 +12,6 @@
   --glass-strong-bg: rgba(255, 255, 255, 0.72);
   --glass-strong-border: rgba(255, 255, 255, 0.8);
   --navbar-bg: rgba(255, 255, 255, 0.72);
-  --navbar-border: rgba(255, 255, 255, 0.8);
   --footer-bg: rgba(255, 255, 255, 0.4);
   --hover-bg: rgba(0, 0, 0, 0.05);
   --divider: rgba(0, 0, 0, 0.06);
@@ -41,7 +40,6 @@
   --glass-strong-bg: rgba(20, 28, 44, 0.82);
   --glass-strong-border: rgba(148, 163, 184, 0.22);
   --navbar-bg: rgba(11, 18, 32, 0.82);
-  --navbar-border: rgba(148, 163, 184, 0.18);
   --footer-bg: rgba(13, 21, 36, 0.6);
   --hover-bg: rgba(255, 255, 255, 0.07);
   --divider: rgba(148, 163, 184, 0.16);
@@ -66,10 +64,15 @@ html.theme-anim, html.theme-anim * {
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; }
+/* 页面底色提升到 html：为 z-index:-1 的「光标辉光层」腾出绘制位置。
+   否则 body 自己的背景（绘制顺序在负 z 层之后）会把辉光整个盖住。 */
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
 
 body {
-  background: var(--bg);
+  background: transparent;
   color: var(--ink);
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC',
     'Helvetica Neue', 'Microsoft YaHei', sans-serif;
@@ -140,6 +143,32 @@ a > .card:hover, .card.hoverable:hover {
 }
 .animate-float { animation: float 6s ease-in-out infinite; }
 
+/* ===== 全站光标辉光层（跟随鼠标的柔和环境光，风格取自学习中心 lc-hero-glow） ===== */
+#site-cursor-glow {
+  position: fixed;
+  left: 0; top: 0;
+  width: 520px; height: 520px;
+  margin-left: -260px; margin-top: -260px; /* 中心对齐：translate3d 的目标点即鼠标坐标 */
+  z-index: -1;          /* html 背景之上、所有页面内容之下 */
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle at center,
+    rgba(56, 189, 248, 0.30) 0%,
+    rgba(125, 211, 252, 0.13) 38%,
+    rgba(14, 165, 233, 0) 66%);
+  filter: blur(36px);
+  opacity: 0.9;
+  will-change: transform;
+  transition: opacity 0.5s ease;
+}
+[data-theme="dark"] #site-cursor-glow {
+  background: radial-gradient(circle at center,
+    rgba(56, 189, 248, 0.24) 0%,
+    rgba(125, 211, 252, 0.09) 42%,
+    rgba(14, 165, 233, 0) 70%);
+}
+@media (prefers-reduced-motion: reduce) { #site-cursor-glow { display: none; } }
+
 /* ===== 几何图标（替代 emoji，去 AI 味） ===== */
 .card-icon {
   display: grid;
@@ -193,13 +222,19 @@ a > .card:hover, .card.hoverable:hover {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 50;
-  transition: all 0.3s;
+  /* 不使用 transition: all——border/backdrop-filter 被一起卷进过渡会让
+     「首滚越阈值时」navbar 底部那 1px 边线从 0px 长出 + 颜色淡入 ~0.3s，
+     视觉上变成一根持续闪现的「白/黑线」。仅过渡会真正插值的两个属性。*/
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 .navbar.scrolled {
   background: var(--navbar-bg);
   backdrop-filter: blur(28px) saturate(200%);
   -webkit-backdrop-filter: blur(28px) saturate(200%);
-  border-bottom: 1px solid var(--navbar-border);
+  /* 移除 border-bottom: 1px solid var(--navbar-border)——这根硬 1px
+     边线在浅色下呈 80% 白、深色下贴近黑，且会在阈值跨越时
+     配合 transition: all 形成「线在长」的视觉毛刺。靠 box-shadow
+     + backdrop-filter 的模糊边界已足够给出分层，无需再叠。 */
   box-shadow: var(--shadow-glass);
 }
 .navbar-inner {

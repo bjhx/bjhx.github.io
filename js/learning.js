@@ -1,20 +1,29 @@
 /* ============================================================
    幻象学习中心 —— 课程数据 + 交互逻辑
-   纯前端实现：数据集中管理，后续只需替换下方 LEARNING 数据即可上线真实内容
+   纯前端实现：已内置真实课程数据，加课只需按下方数据结构追加即可
    视图层级：第2层(职位) -> 第3层(课程列表) -> 第4层(课程详情) -> 第5层(视频播放)
    ============================================================ */
 (function () {
   'use strict';
 
   /* ============================================================
-     课程数据（此处后续替换为真实数据）
-     结构：roles 定义职位气泡；courses 以 roleId 为键，存放该角色的课程数组。
-     每个课程含 cover 渐变色（后续可换成 coverImg 封面图地址）、
-     intro/req/goals/tools 四个信息区、episodes 选集数组（bvid 为 B 站 BV 号）。
+     课程数据（真实课程：7 职位 / 18 门课，内容来自 B 站公开课）
+     结构：roles 定义职位气泡（含主题色 tint/tint2 与 SVG 图标 icon）；
+     courses 以 roleId 为键存放课程数组。每课程含 coverImg 封面与 cover 兜底色、
+     intro/req/goals/tools 信息区、material 配套资料（可选）、
+     episodes 选集数组（bvid + page，支持多 P 分集与多 BV 拼接）。
      ============================================================ */
   var LEARNING = {
-    /* 角色气泡（7 个职位） */
-    roles: [{"id": "director", "name": "我是导演", "badge": "导"}, {"id": "editor", "name": "我是剪辑", "badge": "剪"}, {"id": "storyboard", "name": "我是分镜", "badge": "镜"}, {"id": "sound", "name": "我是收音", "badge": "收"}, {"id": "writer", "name": "我是编剧", "badge": "编"}, {"id": "operator", "name": "我是运营", "badge": "运"}, {"id": "frontend", "name": "我是前端", "badge": "前"}],
+    /* 角色气泡（7 个职位）——每角色配独立主题色与 SVG 图标，差异化视觉 */
+    roles: [
+      { id: "director",   name: "我是导演", tint: "#0e7490", tint2: "#0c4a6e", icon: '<rect x="2" y="6" width="14" height="12" rx="2"/><circle cx="9" cy="12" r="3"/><path d="M16 9l4-2 2 2v8l-2 2-4-2"/>' },
+      { id: "editor",     name: "我是剪辑", tint: "#7c3aed", tint2: "#5b21b6", icon: '<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/>' },
+      { id: "storyboard", name: "我是分镜", tint: "#ea580c", tint2: "#c2410c", icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/>' },
+      { id: "sound",      name: "我是收音", tint: "#e11d48", tint2: "#9f1239", icon: '<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/>' },
+      { id: "writer",     name: "我是编剧", tint: "#1d4ed8", tint2: "#1e3a8a", icon: '<path d="M14 4l6 6-9 9H5v-6l9-9z"/><line x1="14" y1="4" x2="20" y2="10"/><line x1="5" y1="19" x2="9" y2="19"/>' },
+      { id: "operator",   name: "我是运营", tint: "#db2777", tint2: "#9d174d", icon: '<line x1="3" y1="21" x2="21" y2="21"/><rect x="5" y="13" width="3" height="6"/><rect x="11" y="9" width="3" height="10"/><rect x="17" y="5" width="3" height="14"/><polyline points="3 12 7 8 11 10"/>' },
+      { id: "frontend",   name: "我是前端", tint: "#059669", tint2: "#065f46", icon: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="13" y1="4" x2="11" y2="20"/>' }
+    ],
 
     /* 各职位真实课程（B 站公开课整理；每集可独立 BV + page） */
     courses: {
@@ -815,8 +824,155 @@
   var state = {
     roleId: null,       // 当前职位
     courseId: null,     // 当前课程
-    episodeIdx: 0       // 当前选集下标
+    episodeIdx: 0,      // 当前选集下标
+    searchTerm: ''      // 第3层课程列表的搜索关键词
   };
+
+  /* ==================== 学习进度（localStorage 持久化） ==================== */
+  var PROGRESS_KEY = 'lc_progress_v1';
+  var _progressCache = null;
+  function loadProgress() {
+    if (_progressCache) return _progressCache;
+    try {
+      var raw = localStorage.getItem(PROGRESS_KEY);
+      _progressCache = raw ? JSON.parse(raw) : {};
+    } catch (e) { _progressCache = {}; }
+    return _progressCache;
+  }
+  function saveProgress() {
+    try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(_progressCache)); } catch (e) {}
+  }
+  function getWatchedSet(courseId) {
+    var all = loadProgress();
+    return all[courseId] || (all[courseId] = {});
+  }
+  function epKey(ep) { return ep.bvid + ':' + (ep.page || 1); }
+  function isWatched(courseId, ep) {
+    return !!getWatchedSet(courseId)[epKey(ep)];
+  }
+  function toggleWatched(courseId, ep) {
+    var set = getWatchedSet(courseId);
+    var k = epKey(ep);
+    if (set[k]) { delete set[k]; } else { set[k] = Date.now(); }
+    saveProgress();
+    return !!set[k];
+  }
+  function countWatched(course) {
+    var set = getWatchedSet(course.id);
+    var n = 0;
+    course.episodes.forEach(function (ep) { if (set[epKey(ep)]) n++; });
+    return n;
+  }
+  function clearCourseProgress(courseId) {
+    var all = loadProgress();
+    delete all[courseId];
+    saveProgress();
+  }
+
+  /* ==================== Hero 数据统计 ==================== */
+  function updateStats() {
+    var all = LEARNING.courses;
+    var keys = Object.keys(all);
+    var courseCount = 0, epCount = 0;
+    keys.forEach(function (k) {
+      var list = all[k];
+      courseCount += list.length;
+      list.forEach(function (c) { epCount += c.episodes.length; });
+    });
+    var setCount = $('#lc-stat-courses');
+    var roleCount = $('#lc-stat-roles');
+    var epEl = $('#lc-stat-eps');
+    if (setCount) setCount.textContent = courseCount;
+    if (roleCount) roleCount.textContent = keys.length;
+    if (epEl) epEl.textContent = epCount;
+  }
+
+  /* ==================== 课程卡片搜索（按课程名筛选） ==================== */
+  function bindSearch() {
+    var input = $('#lc-search-input');
+    var clearBtn = $('#lc-search-clear');
+    if (!input) return;
+    var timer = null;
+    input.addEventListener('input', function () {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(function () {
+        state.searchTerm = input.value.trim().toLowerCase();
+        clearBtn.classList.toggle('is-visible', !!input.value);
+        renderCourseGrid();
+      }, 120);
+    });
+    clearBtn.addEventListener('click', function () {
+      input.value = '';
+      state.searchTerm = '';
+      clearBtn.classList.remove('is-visible');
+      renderCourseGrid();
+      input.focus();
+    });
+  }
+
+  /* ==================== 键盘导航（播放页 ← → 切集；空格也可切） ==================== */
+  function bindKeyboard() {
+    document.addEventListener('keydown', function (e) {
+      // 只在播放视图生效，且不在输入框内
+      var playerView = $('#view-player');
+      if (!playerView || !playerView.classList.contains('is-active')) return;
+      var ae = document.activeElement;
+      if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.isContentEditable)) return;
+      var course = getCourse(state.courseId);
+      if (!course) return;
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        if (state.episodeIdx < course.episodes.length - 1) {
+          state.episodeIdx++;
+          playEpisode(course);
+          e.preventDefault();
+        }
+      } else if (e.key === 'ArrowLeft') {
+        if (state.episodeIdx > 0) {
+          state.episodeIdx--;
+          playEpisode(course);
+          e.preventDefault();
+        }
+      }
+    });
+  }
+
+  /* ==================== Hero 鼠标光晕跟随 ==================== */
+  function bindHeroGlow() {
+    var hero = document.querySelector('.lc-hero');
+    var glow = $('#lc-hero-glow');
+    if (!hero || !glow) return;
+    var raf = null;
+    hero.addEventListener('mousemove', function (e) {
+      var rect = hero.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(function () {
+        glow.style.left = x + 'px';
+        glow.style.top = y + 'px';
+        glow.style.opacity = '0.8';
+      });
+    });
+    hero.addEventListener('mouseleave', function () {
+      glow.style.opacity = '0';
+    });
+  }
+
+  /* ==================== 视图进入动效（IntersectionObserver 兜底） ==================== */
+  function bindRevealOnScroll() {
+    if (!('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.classList.add('is-revealed');
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    $all('.role-bubble, .course-card, .detail-block').forEach(function (el) {
+      io.observe(el);
+    });
+  }
 
   /* ==================== 工具 ==================== */
   function $(sel, ctx) { return (ctx || document).querySelector(sel); }
@@ -857,6 +1013,9 @@
       el.type = 'button';
       el.className = 'role-bubble';
       el.setAttribute('data-role', role.id);
+      // 注入主题色
+      el.style.setProperty('--bubble-tint', role.tint);
+      el.style.setProperty('--bubble-tint-2', role.tint2);
       // 每个气泡随机漂浮参数（小幅、慢速、随机方向）
       var drift = idx % 2 === 0 ? 1 : -1;
       el.style.setProperty('--fx', (5 + Math.random() * 5) * drift + 'px');
@@ -864,10 +1023,19 @@
       el.style.setProperty('--dur', (6 + Math.random() * 4) + 's');
       el.style.setProperty('--delay', (Math.random() * -8) + 's');
       el.innerHTML =
-        '<span class="bubble-badge">' + role.badge + '</span>' +
-        '<span>' + role.name + '</span>';
+        '<span class="bubble-badge">' +
+          '<svg viewBox="0 0 24 24" aria-hidden="true">' + role.icon + '</svg>' +
+        '</span>' +
+        '<span class="bubble-text">' + role.name + '</span>' +
+        '<span class="bubble-arrow" aria-hidden="true">' +
+          '<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>' +
+        '</span>';
       el.addEventListener('click', function () {
         state.roleId = role.id;
+        // 清掉搜索状态（每次进入角色列表重置）
+        state.searchTerm = '';
+        var inp = $('#lc-search-input'); if (inp) inp.value = '';
+        var clr = $('#lc-search-clear'); if (clr) clr.classList.remove('is-visible');
         enterCourses();
       });
       box.appendChild(el);
@@ -889,24 +1057,60 @@
     var grid = $('#course-grid');
     if (!grid) return;
     var list = LEARNING.courses[state.roleId] || [];
+    // 搜索过滤
+    var term = state.searchTerm;
+    if (term) {
+      list = list.filter(function (c) {
+        return (c.name || '').toLowerCase().indexOf(term) >= 0
+          || (c.brief || '').toLowerCase().indexOf(term) >= 0;
+      });
+    }
     if (list.length === 0) {
-      grid.innerHTML = '<p class="lc-empty">该职位下暂无课程，敬请期待。</p>';
+      grid.innerHTML =
+        '<div class="lc-empty">' +
+          '<div class="lc-empty-icon">⌕</div>' +
+          (term ? '<p>没找到匹配 "<strong>' + escapeHtml(term) + '</strong>" 的课程</p>'
+                : '<p>该职位下暂无课程，敬请期待。</p>') +
+        '</div>';
       return;
     }
     grid.innerHTML = '';
     list.forEach(function (course, i) {
+      // 取主色调（与气泡同色）：根据 roleId 取对应 tint
+      var role = getRole(course.roleId);
+      var tint = (role && role.tint) || 'var(--mirage-500)';
+      var watched = countWatched(course);
+      var pct = course.episodes.length ? Math.round(watched / course.episodes.length * 100) : 0;
       var card = document.createElement('button');
       card.type = 'button';
       card.className = 'course-card';
+      card.style.setProperty('--card-tint', tint);
       card.style.setProperty('--reveal-delay', (i * 60) + 'ms');
+      var coverStyle = course.coverImg
+        ? 'background-image:url(' + course.coverImg + ');background-color:' + course.cover
+        : 'background:' + course.cover;
+      // 进度环（已学>0 才显示）
+      var progressHtml = '';
+      if (watched > 0) {
+        var r = 18, c = 2 * Math.PI * r;
+        var off = c * (1 - pct / 100);
+        progressHtml =
+          '<span class="cover-progress" title="已学 ' + watched + ' / ' + course.episodes.length + ' 集">' +
+            '<svg viewBox="0 0 42 42">' +
+              '<circle class="ring-bg" cx="21" cy="21" r="' + r + '"/>' +
+              '<circle class="ring-fg" cx="21" cy="21" r="' + r + '" ' +
+                'stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '"/>' +
+              '<text class="ring-text" x="21" y="21" text-anchor="middle" dominant-baseline="central">' + pct + '%</text>' +
+            '</svg>' +
+          '</span>';
+      }
       card.innerHTML =
-        '<span class="course-cover' + (course.coverImg ? ' has-img' : '') + '" style="' +
+        '<span class="course-cover' + (course.coverImg ? ' has-img' : '') + '" style="' + coverStyle + ';">' +
           (course.coverImg
-            ? 'background-image:url(' + course.coverImg + ');background-color:' + course.cover
-            : 'background:' + course.cover) +
-        ';">' +
-          '<span class="cover-tag">' + course.category + '</span>' +
-          (course.coverImg ? '' : (course.coverMark ? '<span class="cover-mark">' + course.coverMark + '</span>' : '')) +
+            ? '<img class="cover-img-zoom" src="' + buildCdnUrl(course.coverImg) + '" data-fallback="' + course.coverImg + '" loading="lazy" decoding="async" alt="" onerror="if(this.dataset.fb2){this.src=this.dataset.fb2;this.onerror=function(){this.onerror=null;this.src=this.dataset.fallback;};}else{this.onerror=null;this.src=this.dataset.fallback;}" data-fb2="' + buildCdnUrl(course.coverImg, 2) + '" />'
+            : (course.coverMark ? '<span class="cover-mark">' + course.coverMark + '</span>' : '')) +
+          '<span class="cover-tag">' + (course.category || '课程') + '</span>' +
+          progressHtml +
         '</span>' +
         '<span class="course-body">' +
           '<span class="course-name">' + course.name + '</span>' +
@@ -915,6 +1119,13 @@
             '<span class="meta-ep">' +
               '<svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>' +
               course.episodes.length + ' 集' +
+            '</span>' +
+            (watched > 0
+              ? '<span class="meta-ep" style="color:var(--graphite);">已学 ' + watched + '</span>'
+              : '') +
+            '<span class="meta-go">' +
+              '查看课程' +
+              '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>' +
             '</span>' +
           '</span>' +
         '</span>';
@@ -927,14 +1138,71 @@
     });
   }
 
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+
+  /* ==================== CDN URL 构造（国内加速关键） ====================
+     封面图走 jsDelivr 镜像，比 bjhx.github.io 直连在国内通常快 5-10 倍。
+     提供多级 fallback：jsDelivr → fastly.jsdelivr.net → bjhx.github.io
+     已通过 Image 探针的 onload/onerror 实现逐级降级，最终回退到 cover 颜色。
+     ============================================================ */
+  var _cdnOwner = 'bjhx/bjhx.github.io@main';
+  function buildCdnUrl(relPath, tier) {
+    if (!relPath) return '';
+    if (/^https?:/.test(relPath)) return relPath;
+    var clean = String(relPath).replace(/^\/+/, '');
+    if (tier === 2) return 'https://fastly.jsdelivr.net/gh/' + _cdnOwner + '/' + clean;
+    if (tier === 3) return 'https://bjhx.github.io/' + clean;
+    return 'https://cdn.jsdelivr.net/gh/' + _cdnOwner + '/' + clean;
+  }
+
+  /* 用 Image 探针预加载封面，依次尝试 jsDelivr → fastly.jsdelivr.net → bjhx.github.io。
+     课程卡用 <img> 标签天然支持 onerror 多级降级；详情页因层叠问题改用 background-image + 探针。 */
+  function loadCoverWithFallback(el, relPath) {
+    var tier = 1;
+    function tryNext() {
+      var url = buildCdnUrl(relPath, tier);
+      if (!url) return;
+      var probe = new Image();
+      probe.onload = function () {
+        el.style.backgroundImage = 'url(' + url + ')';
+        el.style.backgroundColor = '';
+        el.style.backgroundBlendMode = '';
+      };
+      probe.onerror = function () {
+        tier++;
+        if (tier <= 3) tryNext();
+        // 3 级都失败：保持渐变色背景（color 兜底）
+      };
+      probe.src = url;
+    }
+    tryNext();
+  }
+
   /* ==================== 进入第4层：课程详情 ==================== */
   function enterDetail() {
     var course = getCourse(state.courseId);
     if (!course) return;
     $('#detail-title').textContent = course.name;
-    $('#detail-cover').style.background = course.cover;
+    var coverEl = $('#detail-cover');
+    // 底色兜底（color 渐变），加载成功后用真实封面图替换
+    coverEl.style.background = course.cover || '';
+    if (course.coverImg) {
+      loadCoverWithFallback(coverEl, course.coverImg);
+    }
+    // 分类 tag + 课程名 + brief 全部在 cover 内
+    var tagEl = $('#detail-cover-tag');
+    if (tagEl) tagEl.textContent = course.category || '课程';
     $('#detail-name').textContent = course.name;
     $('#detail-brief').textContent = course.brief;
+    // stats 行
+    var watched = countWatched(course);
+    $('#detail-stat-eps').textContent = course.episodes.length;
+    $('#detail-stat-watched').textContent = watched;
+    $('#detail-stat-cat').textContent = course.category || '—';
     $('#detail-intro').textContent = course.intro;
     fillList('#detail-req', course.req);
     fillList('#detail-goals', course.goals);
@@ -948,6 +1216,8 @@
     } else {
       matBox.hidden = true;
     }
+    var sc = $('#detail-side-count');
+    if (sc) sc.textContent = course.episodes.length + ' 集';
     renderEpisodeList('#episode-list', course, false);
     syncEpisodeHighlight(true);
     showView('detail');
@@ -969,25 +1239,45 @@
     var box = $(sel);
     if (!box) return;
     box.innerHTML = '';
+    var watched = getWatchedSet(course.id);
     course.episodes.forEach(function (ep, idx) {
       var item = document.createElement('button');
       item.type = 'button';
-      item.className = 'episode-item' + (idx === state.episodeIdx ? ' is-active' : '');
+      item.className = 'episode-item' + (idx === state.episodeIdx ? ' is-active' : '') + (watched[epKey(ep)] ? ' is-watched' : '');
       item.innerHTML =
-        '<span class="ep-num">' + pad(idx + 1) + '</span>' +
+        '<span class="ep-num"><span>' + pad(idx + 1) + '</span></span>' +
         '<span class="ep-body">' +
           '<span class="ep-title">' + ep.title + '</span>' +
           (ep.note ? '<span class="ep-note">' + ep.note + '</span>' : '') +
+        '</span>' +
+        '<span class="ep-watched-btn" title="标记已学/未学" aria-label="标记已学">' +
+          '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
         '</span>';
-      item.addEventListener('click', function () {
+      // 单击条目本身：进入播放
+      item.addEventListener('click', function (e) {
+        // 防止"标记已学"按钮的点击冒泡到这里
+        if (e.target.closest && e.target.closest('.ep-watched-btn')) return;
         state.episodeIdx = idx;
         if (isPlayer) {
           playEpisode(course);
         } else {
-          // 详情页点选集直接进入播放
           enterPlayer(course, idx);
         }
       });
+      // "标记已学"按钮：切换
+      var wBtn = item.querySelector('.ep-watched-btn');
+      if (wBtn) {
+        wBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          toggleWatched(course.id, ep);
+          // 局部刷新：更新本项 class + 顶部已学统计
+          var nowWatched = !!getWatchedSet(course.id)[epKey(ep)];
+          item.classList.toggle('is-watched', nowWatched);
+          // 详情页：刷新 stats；播放页：刷新播放页顶部 stats
+          var sw = $('#detail-stat-watched');
+          if (sw) sw.textContent = countWatched(course);
+        });
+      }
       box.appendChild(item);
     });
   }
@@ -1014,11 +1304,13 @@
     state.episodeIdx = idx || 0;
     $('#player-course-name').textContent = course.name;
     $('#player-course-brief').textContent = course.brief;
+    var sc = $('#player-side-count');
+    if (sc) sc.textContent = course.episodes.length + ' 集';
     renderEpisodeList('#player-episode-list', course, true);
     playEpisode(course);
     showView('player');
     // 视图可见后再把当前集滚入列表可视区（限高滚动容器内定位）
-    syncEpisodeHighlight(true);
+    setTimeout(function () { syncEpisodeHighlight(true); }, 50);
   }
 
   /* 切换/载入当前选集视频 */
@@ -1029,9 +1321,16 @@
     $('#player-ep-name').textContent = ep.title;
     // 大课部分分集无简介，给通用引导避免空白
     $('#player-ep-desc').textContent = ep.note || '本节来自 B 站公开课合集，建议按顺序学习；可在右侧选集直接切换。';
-    // B 站播放器 iframe（此处后续替换为真实 BV 号；多 P 视频通过 ep.page 指定分集，默认第 1 P）
+    // B 站播放器 iframe：先显示骨架，加载完成后切换 class
+    var wrap = document.querySelector('.player-frame-wrap');
     var frame = $('#player-frame');
-    frame.src = 'https://player.bilibili.com/player.html?bvid=' + ep.bvid + '&page=' + (ep.page || 1) + '&high_quality=1';
+    if (wrap) wrap.classList.remove('is-loaded');
+    frame.src = 'about:blank';
+    setTimeout(function () {
+      frame.src = 'https://player.bilibili.com/player.html?bvid=' + ep.bvid + '&page=' + (ep.page || 1) + '&high_quality=1';
+      // 给 iframe 2.5s 假装"已加载"，B 站跨域无法监听 load，统一时延切换骨架
+      setTimeout(function () { if (wrap) wrap.classList.add('is-loaded'); }, 2500);
+    }, 60);
     // 同步所有选集列表高亮（选中哪个亮哪个）
     syncEpisodeHighlight(true);
   }
@@ -1058,6 +1357,11 @@
   function init() {
     renderRoleBubbles();
     bindBackButtons();
+    bindSearch();
+    bindKeyboard();
+    bindHeroGlow();
+    bindRevealOnScroll();
+    updateStats();
     showView('role');
   }
 
