@@ -80,16 +80,16 @@
 .lc-hero > *:not(.aurora):not(.lc-hero-glow) { position: relative; z-index: 1; }
 
 .lc-title {
-  font-size: 38px;
+  font-size: 40px;
   font-weight: 800;
   letter-spacing: -0.035em;
-  line-height: 1.1;
+  line-height: 1.2;
   color: var(--ink);
   margin: 0 auto;
   max-width: 880px;
 }
 @media (min-width: 640px) { .lc-title { font-size: 54px; } }
-@media (min-width: 1024px) { .lc-title { font-size: 60px; } }
+@media (min-width: 1024px) { .lc-title { font-size: 66px; } }
 .lc-title .grad {
   background: linear-gradient(120deg, var(--mirage-400) 0%, var(--mirage-600) 55%, var(--mirage-300) 100%);
   -webkit-background-clip: text;
@@ -983,7 +983,7 @@
   .role-bubble .bubble-badge { width: 30px; height: 30px; border-radius: 10px; }
   .role-bubble .bubble-badge svg { width: 16px; height: 16px; }
   .lc-hero { padding: 36px 16px 12px; }
-  .lc-title { font-size: 32px; }
+  .lc-title { font-size: 34px; }
   .lc-stats { gap: 8px 14px; font-size: 12px; }
   .lc-stats .stat-num { font-size: 18px; }
   .lc-search { height: 40px; }

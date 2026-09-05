@@ -997,10 +997,21 @@
 
   /* ==================== 视图切换（同页 Tab，不跳新窗口） ==================== */
   function showView(viewName) {
+    // 离开视频播放层时必须卸载 B 站 iframe，否则视图虽隐藏、播放器仍在后台出声
+    if (viewName !== 'player') stopPlayer();
     $all('.lc-view').forEach(function (v) {
       v.classList.toggle('is-active', v.getAttribute('data-view') === viewName);
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* 卸载 B 站播放器：打停止标记并清空 iframe src。
+     停止标记用于拦截 playEpisode 里尚未执行的延时装载（60ms 窗口内快速返回的场景）。 */
+  function stopPlayer() {
+    var frame = $('#player-frame');
+    if (!frame) return;
+    frame.dataset.stopped = '1';
+    frame.src = 'about:blank';
   }
 
   /* ==================== 第2层：渲染角色气泡 ==================== */
@@ -1325,8 +1336,11 @@
     var wrap = document.querySelector('.player-frame-wrap');
     var frame = $('#player-frame');
     if (wrap) wrap.classList.remove('is-loaded');
+    frame.dataset.stopped = '';   // 本次播放清除停止标记（stopPlayer 依赖它拦截延时装载）
     frame.src = 'about:blank';
     setTimeout(function () {
+      // 若期间用户已退出播放层（stopPlayer 打了标记），放弃装载，避免后台出声
+      if (frame.dataset.stopped) return;
       frame.src = 'https://player.bilibili.com/player.html?bvid=' + ep.bvid + '&page=' + (ep.page || 1) + '&high_quality=1';
       // 给 iframe 2.5s 假装"已加载"，B 站跨域无法监听 load，统一时延切换骨架
       setTimeout(function () { if (wrap) wrap.classList.add('is-loaded'); }, 2500);

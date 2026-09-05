@@ -460,6 +460,8 @@ a > .card:hover, .card.hoverable:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-glass-lg);
 }
+/* 窄屏（<768px）顶栏不挤合作咨询：按钮收进汉堡菜单（mobile-menu 内 .m-cta 项） */
+@media (max-width: 767.98px) { .nav-cta { display: none; } }
 
 /* ---- 资源下拉标记（网盘图标风格） ---- */
 
@@ -673,14 +675,14 @@ a > .card:hover, .card.hoverable:hover {
 @media (min-width: 640px) { .hero { padding: 220px 0 130px; } }
 .hero-inner { text-align: center; position: relative; }
 .hero h1 {
-  font-size: 46px;
+  font-size: 52px;
   font-weight: 800;
   letter-spacing: -0.03em;
-  line-height: 1.08;
+  line-height: 1.16;
   color: var(--ink);
 }
-@media (min-width: 640px) { .hero h1 { font-size: 64px; } }
-@media (min-width: 1024px) { .hero h1 { font-size: 76px; } }
+@media (min-width: 640px) { .hero h1 { font-size: 68px; } }
+@media (min-width: 1024px) { .hero h1 { font-size: 84px; } }
 .hero h1 .grad {
   background: linear-gradient(120deg, var(--mirage-400) 0%, var(--mirage-600) 55%, var(--mirage-300) 100%);
   -webkit-background-clip: text;
@@ -956,12 +958,13 @@ a > .card:hover, .card.hoverable:hover {
 /* ===== 页头（子页面） ===== */
 .page-head { text-align: center; padding: 48px 0; }
 .page-head h1 {
-  font-size: 36px;
+  font-size: 40px;
   font-weight: 700;
   letter-spacing: -0.02em;
+  line-height: 1.18;
   color: var(--ink);
 }
-@media (min-width: 640px) { .page-head h1 { font-size: 48px; } }
+@media (min-width: 640px) { .page-head h1 { font-size: 56px; } }
 .page-head .lead {
   margin: 20px auto 0;
   max-width: 640px;
