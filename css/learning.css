@@ -1,0 +1,548 @@
+/* ============================================================
+   幻象学习中心 —— 专属样式
+   依赖 style.css 的设计变量（--bg/--ink/--glass-*/--mirage-*）
+   深色模式通过 html[data-theme="dark"] 自动继承
+   ============================================================ */
+
+/* ===== 主区 ===== */
+.lc-main {
+  position: relative;
+  padding-top: 138px; /* 公告条 + 导航高度 */
+  padding-bottom: 40px;
+  min-height: 70vh;
+}
+
+/* 层级提示条 */
+.lc-crumb {
+  max-width: 1120px;
+  margin: 0 auto;
+  /* 顶部偏移：为固定定位的 navbar 腾出空间（与全站 .page-top 一致） */
+  padding: 148px 24px 10px;
+  font-size: 13px;
+  color: var(--graphite);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+@media (min-width: 640px) { .lc-crumb { padding: 148px 36px 10px; } }
+.lc-crumb a { color: var(--mirage-600); }
+.lc-crumb a:hover { text-decoration: underline; }
+.crumb-sep { opacity: 0.5; }
+
+/* ===== 视图切换（4 层用 JS 控制显隐，不跳转新窗口） ===== */
+.lc-view { display: none; }
+.lc-view.is-active { display: block; }
+
+/* ===== 第2层 职位选择 ===== */
+.lc-hero {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 40px 20px 8px;
+}
+.lc-title {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--ink);
+}
+@media (min-width: 640px) { .lc-title { font-size: 46px; } }
+/* 双色调标题：与全站 .hero h1 .grad 视觉一致 */
+.lc-title .grad {
+  background: linear-gradient(120deg, var(--mirage-400) 0%, var(--mirage-600) 55%, var(--mirage-300) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.lc-subtitle {
+  margin: 14px auto 0;
+  max-width: 560px;
+  font-size: 16px;
+  color: var(--graphite);
+  line-height: 1.7;
+}
+
+/* ---- 气泡场 ---- */
+.role-bubbles {
+  position: relative;
+  max-width: 900px;
+  margin: 34px auto 0;
+  padding: 24px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 22px 26px;
+  min-height: 340px;
+}
+
+/* 液态玻璃气泡 */
+.role-bubble {
+  --fx: 6px;   /* 漂浮 x 幅度 */
+  --fy: 8px;   /* 漂浮 y 幅度 */
+  --dur: 7s;   /* 漂浮周期 */
+  --delay: 0s; /* 漂浮延迟 */
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 26px;
+  border-radius: 9999px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+  animation: lc-float var(--dur) ease-in-out var(--delay) infinite;
+  will-change: transform;
+}
+.role-bubble::before {
+  /* 高光边缘 */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.05) 40%, rgba(56,189,248,0.25));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.role-bubble:hover {
+  transform: scale(1.06);
+  box-shadow: var(--shadow-glass-lg);
+}
+[data-theme="dark"] .role-bubble {
+  background: rgba(23, 32, 50, 0.75);
+}
+
+/* 气泡小图标：职位首字几何徽标 */
+.bubble-badge {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--mirage-400), var(--mirage-600));
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: var(--shadow-glass);
+  flex-shrink: 0;
+}
+
+@keyframes lc-float {
+  0%, 100% { transform: translate(0, 0); }
+  25%      { transform: translate(var(--fx), calc(var(--fy) * -0.6)); }
+  50%      { transform: translate(calc(var(--fx) * -0.7), var(--fy)); }
+  75%      { transform: translate(calc(var(--fx) * 0.6), calc(var(--fy) * 0.4)); }
+}
+/* 深色下漂浮不叠加 hover 放大冲突问题：hover 放大用额外变量不影响 */
+
+.lc-hint {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--graphite);
+}
+
+/* ===== 第3层 课程列表 ===== */
+.lc-view-head {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 8px 24px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+@media (min-width: 640px) { .lc-view-head { padding: 8px 36px 18px; flex-direction: row; align-items: center; justify-content: space-between; } }
+.lc-page-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.lc-page-desc {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--graphite);
+}
+
+.lc-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--graphite);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+.lc-back:hover { color: var(--mirage-600); transform: translateX(-2px); }
+.lc-back svg {
+  width: 15px; height: 15px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 配套资料入口（课程配置了 material 时显示） */
+.lc-material-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 9px 20px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--mirage-500), var(--mirage-600));
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--shadow-glass);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.lc-material-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+
+/* 课程网格 */
+.course-grid {
+  max-width: 1120px;
+  margin: 20px auto 0;
+  padding: 0 24px 40px;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) { .course-grid { grid-template-columns: repeat(2, 1fr); padding: 0 36px 40px; } }
+@media (min-width: 1024px) { .course-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.course-card {
+  display: block;
+  text-align: left;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--glass-strong-bg);
+  backdrop-filter: blur(22px) saturate(170%);
+  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  border: 1px solid var(--glass-strong-border);
+  box-shadow: var(--shadow-glass);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+  cursor: pointer;
+}
+.course-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-glass-lg);
+}
+
+/* 封面上半部分（占位渐变图，后续替换为真实封面图） */
+.course-cover {
+  position: relative;
+  height: 150px;
+  display: flex;
+  align-items: flex-end;
+  padding: 14px;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+.course-cover .cover-tag {
+  position: absolute;
+  top: 12px; left: 12px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.45);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+}
+[data-theme="dark"] .course-cover .cover-tag {
+  background: rgba(11,18,32,0.5);
+  border-color: rgba(148,163,184,0.35);
+}
+.course-cover .cover-mark {
+  width: 100%;
+  text-align: left;
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: rgba(255,255,255,0.9);
+  text-shadow: 0 2px 18px rgba(0,0,0,0.18);
+}
+
+/* 卡片下半部分 */
+.course-body {
+  padding: 18px 20px 20px;
+}
+.course-name {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+.course-brief {
+  display: block;
+  font-size: 13px;
+  color: var(--graphite);
+  line-height: 1.6;
+}
+.course-meta {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--mirage-600);
+}
+.course-meta .meta-ep { display: inline-flex; align-items: center; gap: 4px; }
+.course-meta svg {
+  width: 13px; height: 13px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ===== 第4层 课程详情 ===== */
+.detail-grid {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px 40px;
+  display: grid;
+  gap: 28px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) { .detail-grid { padding: 0 36px 40px; } }
+@media (min-width: 1024px) {
+  .detail-grid { grid-template-columns: 1fr 340px; align-items: start; }
+}
+
+.detail-main { min-width: 0; }
+
+.detail-intro-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  padding: 0;
+  margin-bottom: 24px;
+}
+.detail-cover {
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+}
+@media (min-width: 640px) { .detail-cover { height: 220px; } }
+.detail-name {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--ink);
+  padding: 22px 26px 4px;
+}
+.detail-brief {
+  padding: 0 26px 24px;
+  font-size: 14px;
+  color: var(--graphite);
+  line-height: 1.7;
+}
+
+.detail-sections { display: flex; flex-direction: column; gap: 18px; }
+.detail-block { padding: 22px 24px; border-radius: 20px; }
+.detail-block h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.detail-block h4::before {
+  content: '';
+  width: 4px;
+  height: 16px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, var(--mirage-400), var(--mirage-600));
+}
+.detail-p {
+  font-size: 14px;
+  color: var(--graphite);
+  line-height: 1.8;
+}
+.detail-list { list-style: none; }
+.detail-list li {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--graphite);
+  line-height: 1.7;
+}
+.detail-list li::before {
+  content: '';
+  position: absolute;
+  left: 2px; top: 10px;
+  width: 6px; height: 6px;
+  border-radius: 9999px;
+  background: var(--mirage-500);
+}
+.detail-list.tools li::before {
+  background: var(--mirage-400);
+  box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
+}
+
+/* 选集列表 */
+.side-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.episode-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* 选集限高滚动：单屏约显示 4.5 个，超出往下滑（顶部条目随之滑出隐藏） */
+  max-height: 380px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mirage-300) transparent;
+  padding-right: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+.episode-list::-webkit-scrollbar { width: 5px; }
+.episode-list::-webkit-scrollbar-track { background: transparent; }
+.episode-list::-webkit-scrollbar-thumb {
+  background: var(--mirage-300);
+  border-radius: 999px;
+}
+.episode-list::-webkit-scrollbar-thumb:hover { background: var(--mirage-500); }
+/* 选中项保持可点且整行不被遮挡 */
+.episode-list .episode-item { flex-shrink: 0; }
+.episode-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background: var(--glass-bg);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.episode-item:hover { border-color: var(--mirage-200); background: var(--glass-strong-bg); }
+.episode-item.is-active {
+  border-color: var(--mirage-400);
+  background: linear-gradient(120deg, var(--mirage-50), var(--glass-strong-bg));
+}
+.ep-num {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--mirage-400), var(--mirage-600));
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.episode-item.is-active .ep-num { box-shadow: 0 0 0 4px rgba(56,189,248,0.2); }
+.ep-body { min-width: 0; }
+.ep-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.45;
+  margin-bottom: 3px;
+}
+.ep-note {
+  font-size: 12px;
+  color: var(--graphite);
+  line-height: 1.5;
+}
+
+/* ===== 第5层 视频播放 ===== */
+.player-layout {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px 40px;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) { .player-layout { padding: 0 36px 40px; } }
+@media (min-width: 1024px) {
+  .player-layout { grid-template-columns: minmax(0, 1fr) 340px; align-items: start; }
+}
+
+.player-frame-wrap {
+  position: relative;
+  padding-top: 56.25%; /* 16:9 */
+  border-radius: 18px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: var(--shadow-glass);
+}
+.player-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.player-note { margin-top: 16px; padding: 20px 24px; border-radius: 18px; }
+.player-note h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.player-side { min-width: 0; }
+.player-course-info { padding: 18px 20px; border-radius: 18px; }
+.player-course-info h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+/* 空态 / 加载保护 */
+.lc-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--graphite);
+  font-size: 15px;
+}
+
+@media (max-width: 767px) {
+  .lc-main { padding-top: 128px; }
+  .role-bubbles { gap: 16px 18px; min-height: 300px; }
+  .role-bubble { padding: 13px 20px; font-size: 15px; }
+}
