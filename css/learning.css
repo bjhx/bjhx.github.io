@@ -417,7 +417,7 @@
 .course-grid {
   max-width: 1120px;
   margin: 40px auto 0;      /* 顶部与工具条之间留出天窗 */
-  padding: 0 28px 64px;     /* 左右边缘留白 + 底部余量 */
+  padding: 0 40px 64px;     /* 左右边缘留白 + 底部余量 */
   display: grid;
   column-gap: 26px;
   row-gap: 30px;            /* 行与行之间更透气 */
@@ -426,7 +426,7 @@
 @media (min-width: 640px) {
   .course-grid {
     grid-template-columns: repeat(2, 1fr);
-    padding: 0 44px 64px;   /* 桌面更宽的左右留边 */
+    padding: 0 64px 64px;   /* 桌面更宽的左右留边 */
   }
 }
 @media (min-width: 1024px) { .course-grid { grid-template-columns: repeat(3, 1fr); } }
