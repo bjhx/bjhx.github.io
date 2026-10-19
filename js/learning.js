@@ -35,7 +35,7 @@
           name: "张策·短视频导演养成记",
           brief: "19 集系统课：从拉片偷师、文案情绪到手机实拍剪辑，走通完整的短视频导演创作流程。",
           category: "实战",
-          coverImg: "img/courses/cover-dir-003.png",
+          coverImg: "img/courses/cover-dir-003.webp",
           cover: "135deg, #155e75 0%, #0891b2 50%, #22d3ee 100%",
           coverMark: "策",
           intro: "张策（导演\"张小策\"，朱一旦系列导演）的短视频导演方法论：如何从热门作品里\"偷\"思路，如何用情绪和想象力写文案，如何只用一部手机完成拍摄与剪辑。全 19 集，从认知到实操完整覆盖。",
@@ -70,7 +70,7 @@
           name: "WorkBuddy 官方教程 · 完全上手",
           brief: "30 集保姆级官方教程：从认识 WorkBuddy 到远程控制、提示词技巧与高效技能，把 AI 办公真正用起来。",
           category: "官方",
-          coverImg: "img/courses/cover-wb-001.png",
+          coverImg: "img/courses/cover-wb-001.webp",
           cover: "135deg, #0c4a6e 0%, #0284c7 55%, #7dd3fc 100%",
           coverMark: "智",
           intro: "WorkBuddy 官方出品（UP：腾讯WorkBuddy官方教程）的保姆级完整教程，共 30 集。从\"AI 办公新范式\"建立认知，到安装与工作模式、远程控制 Claw、提示词技巧，再到各类办公场景与精选技能（文档、表格、录音转文字等），零基础一周可完成入门到进阶。适合全团队一起学。",
@@ -119,7 +119,7 @@
           name: "剪映专业版 · 零基础学剪辑",
           brief: "54 集系统大课：从导入素材、关键帧到转场卡点与影视后期变现，剪映与 PR 双软件覆盖。",
           category: "入门",
-          coverImg: "img/courses/cover-edi-001.png",
+          coverImg: "img/courses/cover-edi-001.webp",
           cover: "135deg, #4f46e5 0%, #7c3aed 55%, #a78bfa 100%",
           coverMark: "映",
           intro: "B 站口碑剪映大课（UP：剪辑教程寒林）。从软件安装与素材导入讲起，逐集覆盖关键帧、曲线变速、卡点、调色、字幕、转场等剪映专业版全部核心功能，并穿插\"剪辑变现\"\"影视后期入门\"等商业视角，最后一组案例实操带你完成进阶转场。想系统掌握剪映，从这套开始最省时间。",
@@ -190,7 +190,7 @@
           name: "声音设计 · 用音效提升剪辑质感",
           brief: "单集精华：混剪、预告片、旅拍短片如何用音效把画面质感拉高一个档次。",
           category: "进阶",
-          coverImg: "img/courses/cover-edi-002.png",
+          coverImg: "img/courses/cover-edi-002.webp",
           cover: "135deg, #0891b2 0%, #06b6d4 60%, #67e8f9 100%",
           coverMark: "音",
           intro: "很多片子画面不错却\"没声音的灵魂\"。本课（UP：南门录像厅）从声音设计的角度拆解：预告片怎么铺音效、混剪怎么对点、旅拍怎么用环境声建立氛围，一条视频讲清\"用音效提升剪辑质感\"的核心思路。",
@@ -208,7 +208,7 @@
           name: "WorkBuddy 官方教程 · 完全上手",
           brief: "30 集保姆级官方教程：从认识 WorkBuddy 到远程控制、提示词技巧与高效技能，把 AI 办公真正用起来。",
           category: "官方",
-          coverImg: "img/courses/cover-wb-001.png",
+          coverImg: "img/courses/cover-wb-001.webp",
           cover: "135deg, #0c4a6e 0%, #0284c7 55%, #7dd3fc 100%",
           coverMark: "智",
           intro: "WorkBuddy 官方出品（UP：腾讯WorkBuddy官方教程）的保姆级完整教程，共 30 集。从\"AI 办公新范式\"建立认知，到安装与工作模式、远程控制 Claw、提示词技巧，再到各类办公场景与精选技能（文档、表格、录音转文字等），零基础一周可完成入门到进阶。适合全团队一起学。",
@@ -257,7 +257,7 @@
           name: "老白分镜课 · 从零基础到实战",
           brief: "17 集分镜系统课（连载中）：正反打、轴线、透视、蒙太奇，把镜头语言一次讲透。",
           category: "入门",
-          coverImg: "img/courses/cover-sto-001.png",
+          coverImg: "img/courses/cover-sto-001.webp",
           cover: "135deg, #0e7490 0%, #0891b2 55%, #22d3ee 100%",
           coverMark: "镜",
           intro: "B 站专业分镜教学（UP：老白的分镜），目前更新到 16 课并持续连载。课程从\"正反打\"讲起，系统覆盖轴线规则、透视基础、主镜概念、蒙太奇等分镜与镜头语言知识，配有大量影片拆解范例，适合想从零建立分镜体系的人。",
@@ -291,7 +291,7 @@
           name: "AI 视觉生产工作流 · 稳定出图",
           brief: "单集精华：从随机抽卡到锁定风格、替换变量，建立可控的 AI 出图流程。",
           category: "进阶",
-          coverImg: "img/courses/cover-sto-002.png",
+          coverImg: "img/courses/cover-sto-002.webp",
           cover: "135deg, #4338ca 0%, #6366f1 60%, #a5b4fc 100%",
           coverMark: "图",
           intro: "AI 出图最大的痛点是\"不稳定\"。本课（UP：段截面）演示一套从随机抽卡到稳定复现的视觉生产工作流：锁定风格关键词、把可替换内容做成变量，再用参考图微调出图方向，让 AI 从\"碰运气\"变成\"可生产\"。分镜阶段找参考、做概念图都很实用。",
@@ -309,7 +309,7 @@
           name: "AI 提示词工程 · 零基础全套",
           brief: "8 集提示词系统课：基本原则、结构、框架到攻击防御与实战场景，一小时快速入门。",
           category: "入门",
-          coverImg: "img/courses/cover-sto-003.png",
+          coverImg: "img/courses/cover-sto-003.webp",
           cover: "135deg, #1e40af 0%, #3b82f6 55%, #93c5fd 100%",
           coverMark: "词",
           intro: "面向零基础的提示词工程完整课（UP：大模型基础），8 集约一小时：从提示词入门、编写原则、基本结构，到常用框架、进阶技巧、自动化，再到安全与实战场景。学会写提示词，AI 出图、AI 写作、AI 编程的效率都会上一个台阶。",
@@ -334,7 +334,7 @@
           name: "WorkBuddy 官方教程 · 完全上手",
           brief: "30 集保姆级官方教程：从认识 WorkBuddy 到远程控制、提示词技巧与高效技能，把 AI 办公真正用起来。",
           category: "官方",
-          coverImg: "img/courses/cover-wb-001.png",
+          coverImg: "img/courses/cover-wb-001.webp",
           cover: "135deg, #0c4a6e 0%, #0284c7 55%, #7dd3fc 100%",
           coverMark: "智",
           intro: "WorkBuddy 官方出品（UP：腾讯WorkBuddy官方教程）的保姆级完整教程，共 30 集。从\"AI 办公新范式\"建立认知，到安装与工作模式、远程控制 Claw、提示词技巧，再到各类办公场景与精选技能（文档、表格、录音转文字等），零基础一周可完成入门到进阶。适合全团队一起学。",
@@ -383,7 +383,7 @@
           name: "影视飓风的声音质感 · 深度解析",
           brief: "单集干货：普通人如何一步步接近影视飓风的声音质感，从器材到后期思路全拆解。",
           category: "进阶",
-          coverImg: "img/courses/cover-sou-001.png",
+          coverImg: "img/courses/cover-sou-001.webp",
           cover: "135deg, #0f766e 0%, #14b8a6 55%, #5eead4 100%",
           coverMark: "声",
           intro: "影视飓风一直被夸\"声音质感好\"，好在哪、怎么做到的？本课（UP：Tom不是Harry）从收音设备、现场拾音到后期处理逐步拆解，讲清普通人也能上手的声音提升路径。想让你拍的视频\"听感\"变专业，这集值得反复看。",
@@ -401,7 +401,7 @@
           name: "WorkBuddy 官方教程 · 完全上手",
           brief: "30 集保姆级官方教程：从认识 WorkBuddy 到远程控制、提示词技巧与高效技能，把 AI 办公真正用起来。",
           category: "官方",
-          coverImg: "img/courses/cover-wb-001.png",
+          coverImg: "img/courses/cover-wb-001.webp",
           cover: "135deg, #0c4a6e 0%, #0284c7 55%, #7dd3fc 100%",
           coverMark: "智",
           intro: "WorkBuddy 官方出品（UP：腾讯WorkBuddy官方教程）的保姆级完整教程，共 30 集。从\"AI 办公新范式\"建立认知，到安装与工作模式、远程控制 Claw、提示词技巧，再到各类办公场景与精选技能（文档、表格、录音转文字等），零基础一周可完成入门到进阶。适合全团队一起学。",
@@ -450,7 +450,7 @@
           name: "查理的编剧课 · 从零到高阶实战",
           brief: "92 集编剧实战大课（连载中）：劝学、故事要素、实战拉片全覆盖，编剧视角拆解经典电影。",
           category: "实战",
-          coverImg: "img/courses/cover-wri-001.png",
+          coverImg: "img/courses/cover-wri-001.webp",
           cover: "135deg, #be185d 0%, #db2777 55%, #f472b6 100%",
           coverMark: "剧",
           intro: "B 站口碑编剧课（UP：查理老师的编剧课），已更 90+ 集并持续更新。从\"劝学\"建立创作心态，到故事要素、结构理论，再到大量\"编剧视角拉片\"（含《肖申克的救赎》等经典），用上百个小时把编剧从零到高阶的路径走一遍。想认真学编剧，这是目前 B 站最完整的实战合集之一。",
@@ -559,7 +559,7 @@
           name: "Tim 如何写稿 · 构建视频节奏感",
           brief: "单集拆解：影视飓风 Tim 的写稿方法，一篇文章讲清如何构建视频的节奏感。",
           category: "进阶",
-          coverImg: "img/courses/cover-wri-002.png",
+          coverImg: "img/courses/cover-wri-002.webp",
           cover: "135deg, #9d174d 0%, #c026d3 55%, #e879f9 100%",
           coverMark: "稿",
           intro: "为什么有的视频让你一口气看完？节奏感从写稿阶段就开始了。本集（一个薏_YiMedia）拆解影视飓风 Tim 的写稿习惯：怎么搭信息顺序、怎么埋钩子、怎么控制段落的松紧，最终落到\"稿子结构决定成片节奏\"这件事上。",
@@ -579,7 +579,7 @@
           name: "新媒体运营 300 集自学教程",
           brief: "67 集全栈运营大课：小红书/抖音/视频号起号涨粉、文案写作、直播带货与数据分析全覆盖，附配套资料。",
           category: "实战",
-          coverImg: "img/courses/cover-ope-001.png",
+          coverImg: "img/courses/cover-ope-001.webp",
           cover: "135deg, #c2410c 0%, #ea580c 60%, #fdba74 100%",
           coverMark: "营",
           intro: "B 站运营系统大课（UP：哔里哔里运营），已收录 67 集并持续更新。从小红书起号算法、赛道选择、账号定位，到抖音/视频号运营、文案写作、短视频拍摄剪辑，再到直播话术与数据复盘，覆盖新媒体运营求职就业与自媒体的完整链路，配套资料已附在课程内。",
@@ -664,7 +664,7 @@
           name: "WorkBuddy 官方教程 · 完全上手",
           brief: "30 集保姆级官方教程：从认识 WorkBuddy 到远程控制、提示词技巧与高效技能，把 AI 办公真正用起来。",
           category: "官方",
-          coverImg: "img/courses/cover-wb-001.png",
+          coverImg: "img/courses/cover-wb-001.webp",
           cover: "135deg, #0c4a6e 0%, #0284c7 55%, #7dd3fc 100%",
           coverMark: "智",
           intro: "WorkBuddy 官方出品（UP：腾讯WorkBuddy官方教程）的保姆级完整教程，共 30 集。从\"AI 办公新范式\"建立认知，到安装与工作模式、远程控制 Claw、提示词技巧，再到各类办公场景与精选技能（文档、表格、录音转文字等），零基础一周可完成入门到进阶。适合全团队一起学。",
@@ -713,7 +713,7 @@
           name: "Re01 · 个人网站从零到上线",
           brief: "康文昌编程系列精选：从写第一个网页到 CSS 布局，再到静态网站部署，做出并上线你的个人网站。",
           category: "入门",
-          coverImg: "img/courses/cover-fro-001.png",
+          coverImg: "img/courses/cover-fro-001.webp",
           cover: "135deg, #0369a1 0%, #0284c7 55%, #38bdf8 100%",
           coverMark: "网",
           intro: "以康文昌《我在B站学编程》（Re01 系列）为骨架，挑选\"个人网站\"方向最相关的视频组成一个循序渐进的实战课：先看课程总览建立编程认知，再依次学写网页、HTML 基础、CSS 布局与 Flex 响应式，最后把个人网站真正部署上线，并用一个小项目练手。全部内容均为 B 站公开课。",
@@ -736,7 +736,7 @@
           name: "Re01 · 前端+后端全栈实战",
           brief: "从写小程序到 vue + uni-app + uniCloud 前后端一体开发，一套打通全栈的小项目实战精选。",
           category: "进阶",
-          coverImg: "img/courses/cover-fro-002.png",
+          coverImg: "img/courses/cover-fro-002.webp",
           cover: "135deg, #1e1b4b 0%, #4338ca 60%, #818cf8 100%",
           coverMark: "栈",
           intro: "康文昌\"从零开始的编程之路\"系列里偏全栈实战的一组精选：先一期视频学会写小程序，再进入 vue + uni-app + uniCloud 前后端一体开发（含留言板完整案例），进阶到\"同时写 App/小程序/网页\"的跨端方案，最后用 AI 辅助快速做一个冥想小程序，配合元岛项目编程日记了解真实开发中的踩坑与思路。全部内容均为 B 站公开课。",
@@ -758,7 +758,7 @@
           name: "GitHub 入门 · 用好这个网站",
           brief: "单集实战：这个星球最好用的网站 GitHub 到底怎么用？从注册到托管代码一次讲清。",
           category: "工具",
-          coverImg: "img/courses/cover-fro-003.png",
+          coverImg: "img/courses/cover-fro-003.webp",
           cover: "135deg, #0f172a 0%, #334155 60%, #94a3b8 100%",
           coverMark: "库",
           intro: "做前端、做网站离不开 GitHub：它既是代码仓库，也是全球最大的开源社区。本课（UP：李大可爱玩）面向普通人讲清 GitHub 是什么、注册配置怎么做、怎么托管个人网站与代码，帮你把这个\"最好用的网站\"真正用起来。",
@@ -776,7 +776,7 @@
           name: "WorkBuddy 官方教程 · 完全上手",
           brief: "30 集保姆级官方教程：从认识 WorkBuddy 到远程控制、提示词技巧与高效技能，把 AI 办公真正用起来。",
           category: "官方",
-          coverImg: "img/courses/cover-wb-001.png",
+          coverImg: "img/courses/cover-wb-001.webp",
           cover: "135deg, #0c4a6e 0%, #0284c7 55%, #7dd3fc 100%",
           coverMark: "智",
           intro: "WorkBuddy 官方出品（UP：腾讯WorkBuddy官方教程）的保姆级完整教程，共 30 集。从\"AI 办公新范式\"建立认知，到安装与工作模式、远程控制 Claw、提示词技巧，再到各类办公场景与精选技能（文档、表格、录音转文字等），零基础一周可完成入门到进阶。适合全团队一起学。",
@@ -825,7 +825,7 @@
           name: "手机拍摄运镜实战 · 小设备出片",
           brief: "14 集手机拍摄实操：参数设置、焦段认识、八大运镜、景别构图到延时摄影，一台手机拍出质感画面。",
           category: "实操",
-          coverImg: "img/courses/cover-sho-001.png",
+          coverImg: "img/courses/cover-sho-001.webp",
           cover: "135deg, #78350f 0%, #b45309 55%, #fbbf24 100%",
           coverMark: "拍",
           intro: "取自 B 站清华大佬 198 小时系统课（UP：软考教育）的拍摄篇。团队日常拍摄以手机和小设备为主，这套选集聚焦纯拍摄环节：先把手机参数和焦段吃透，再练基础八大运镜、景别与构图，最后进阶延时摄影与环绕、组合运镜。每个技巧都配实操演示，拍短视频和日常素材直接可用。",
@@ -856,7 +856,7 @@
           name: "玩转 Osmo Pocket 3",
           brief: "口袋云台相机双课拼装：大疆官方使用指南 + 无赞助第三方 10 分钟入门到精通，从开机设置到云台模式一次玩透。",
           category: "设备",
-          coverImg: "img/courses/cover-poc-001.png",
+          coverImg: "img/courses/cover-poc-001.webp",
           cover: "135deg, #0c4a6e 0%, #0e7490 55%, #67e8f9 100%",
           coverMark: "云",
           intro: "团队的口袋云台相机专属课，官方视角 + 用户视角对照着看。第一集来自大疆官方（UP：DJI大疆创新），覆盖首次使用、相机功能、美颜、系统功能与云台模式；第二集是 UP 主 BinBin彬導來了 的无赞助第三方教学，从转屏开机、拍摄格式、常用拍摄设置到跟随模式与隐藏功能，10 分钟上手。",
@@ -875,7 +875,7 @@
           name: "相机性能参数讲解",
           brief: "光圈、快门、ISO 三要素逐个讲透，再补安全快门与视频快门准则，看懂相机拨轮上每个参数到底管什么。",
           category: "基础",
-          coverImg: "img/courses/cover-par-001.png",
+          coverImg: "img/courses/cover-par-001.webp",
           cover: "135deg, #0f172a 0%, #1e3a5f 55%, #64748b 100%",
           coverMark: "参",
           intro: "相机参数入门两连课，均为 B 站口碑单集：先看 UP 主 kkciel 的《单反摄影基本参数讲解》，把光圈、快门、感光度的原理与联动关系一次讲清；再用 UP 主 阿里不是老外 的《快门速度准则》补齐安全快门、慢速快门与视频快门的实战口诀。两集看完，相机拨轮上的每一档都不再陌生。",
@@ -894,7 +894,7 @@
           name: "相机摄影入门 · 从零到实战",
           brief: "100 集系统摄影课：镜头、曝光三要素、白平衡与用光构图，再到人像、扫街等案例实战，零基础玩转相机拍照。",
           category: "入门",
-          coverImg: "img/courses/cover-pho-001.png",
+          coverImg: "img/courses/cover-pho-001.webp",
           cover: "135deg, #1e293b 0%, #475569 55%, #94a3b8 100%",
           coverMark: "摄",
           intro: "B 站热门相机摄影大课（UP：伍伍教摄影），共 100 集。相机在团队里主要负责拍照片，这套课正好覆盖拍照全链路：从镜头分类、快门/光圈/感光度三大曝光要素，到白平衡、影调、构图与美姿，最后进入人像、日系、扫街、夜景等实战专题。相机的每个档位和按键都能在课里找到答案。",
@@ -1286,9 +1286,9 @@
       card.className = 'course-card';
       card.style.setProperty('--card-tint', tint);
       card.style.setProperty('--reveal-delay', (i * 60) + 'ms');
-      var coverStyle = course.coverImg
-        ? 'background-image:url(' + course.coverImg + ');background-color:' + course.cover
-        : 'background:' + course.cover;
+      // 底色统一用渐变兜底：真图由下面的 <img> 承担。
+      // 旧写法这里还挂了 background-image:url(同一张封面)，会让每张卡多下载一份图。
+      var coverStyle = 'background:' + coverGradient(course);
       // 进度环（已学>0 才显示）
       var progressHtml = '';
       if (watched > 0) {
@@ -1307,7 +1307,7 @@
       card.innerHTML =
         '<span class="course-cover' + (course.coverImg ? ' has-img' : '') + '" style="' + coverStyle + ';">' +
           (course.coverImg
-            ? '<img class="cover-img-zoom" src="' + buildCdnUrl(course.coverImg) + '" data-fallback="' + course.coverImg + '" loading="lazy" decoding="async" alt="" onerror="if(this.dataset.fb2){this.src=this.dataset.fb2;this.onerror=function(){this.onerror=null;this.src=this.dataset.fallback;};}else{this.onerror=null;this.src=this.dataset.fallback;}" data-fb2="' + buildCdnUrl(course.coverImg, 2) + '" />'
+            ? '<img class="cover-img-zoom" src="' + coverCandidates(course.coverImg)[0] + '" loading="lazy" decoding="async" alt="" />'
             : (course.coverMark ? '<span class="cover-mark">' + course.coverMark + '</span>' : '')) +
           '<span class="cover-tag">' + (course.category || '课程') + '</span>' +
           progressHtml +
@@ -1329,6 +1329,9 @@
             '</span>' +
           '</span>' +
         '</span>';
+      // 封面加载失败时按候选链逐级降级（同站 webp → 同站 PNG 原图 → jsDelivr → fastly）
+      var coverImgEl = card.querySelector('.cover-img-zoom');
+      if (coverImgEl && course.coverImg) attachCoverFallback(coverImgEl, course.coverImg);
       card.addEventListener('click', function () {
         state.courseId = course.id;
         state.episodeIdx = 0;
@@ -1346,8 +1349,8 @@
 
   /* ==================== CDN URL 构造（国内加速关键） ====================
      封面图走 jsDelivr 镜像，比 bjhx.github.io 直连在国内通常快 5-10 倍。
-     提供多级 fallback：jsDelivr → fastly.jsdelivr.net → bjhx.github.io
-     已通过 Image 探针的 onload/onerror 实现逐级降级，最终回退到 cover 颜色。
+     候选链四级：cdn.jsDelivr(webp) → fastly.jsDelivr(webp) → 同站(webp) → 同站(PNG 原图)
+     全部失败则保留 cover 渐变色兜底，不留空块。
      ============================================================ */
   var _cdnOwner = 'bjhx/bjhx.github.io@main';
   function buildCdnUrl(relPath, tier) {
@@ -1359,27 +1362,59 @@
     return 'https://cdn.jsdelivr.net/gh/' + _cdnOwner + '/' + clean;
   }
 
-  /* 用 Image 探针预加载封面，依次尝试 jsDelivr → fastly.jsdelivr.net → bjhx.github.io。
-     课程卡用 <img> 标签天然支持 onerror 多级降级；详情页因层叠问题改用 background-image + 探针。 */
+  /* 封面候选 URL 列表（1.0.07 起改为「同站优先」）：
+     封面已压缩到 30KB 量级，同站直连就足够快，且不依赖 jsDelivr 在境内的连通性；
+     顺序为 同站 WebP → 同站 PNG 原图 → jsDelivr → fastly，共四级。
+     数据里的 cover 字段是「角度, 色标…」片段，需自行补 linear-gradient()。 */
+  function coverGradient(course) {
+    return course && course.cover ? 'linear-gradient(' + course.cover + ')' : '';
+  }
+
+  function coverCandidates(relPath) {
+    if (!relPath) return [];
+    if (/^https?:/.test(relPath)) return [relPath];
+    var webp = String(relPath).replace(/^\/+/, '');
+    var png = webp.replace(/\.webp$/i, '.png');
+    var list = [webp];
+    if (png !== webp) list.push(png);
+    list.push(buildCdnUrl(webp, 1), buildCdnUrl(webp, 2));
+    return list;
+  }
+
+  /* 课程卡：<img> 逐级降级。全部失败则隐藏图片，露出底下 cover 渐变。
+     注意：src 在 innerHTML 阶段就已写入，极快失败时 error 事件可能早于监听器挂载，
+     因此挂完监听后要再判断一次 complete && naturalWidth === 0。 */
+  function attachCoverFallback(img, relPath) {
+    var list = coverCandidates(relPath).slice(1); // 第 1 个已经写在 src 上
+    var i = 0;
+    function step() {
+      if (i < list.length) {
+        img.src = list[i++];
+      } else {
+        img.removeEventListener('error', step);
+        img.style.opacity = '0'; // 露出版心渐变，不留空白块
+      }
+    }
+    img.addEventListener('error', step);
+    if (img.complete && img.naturalWidth === 0) step();
+  }
+
+  /* 详情页封面：因层叠问题改用 background-image + Image 探针逐级探测 */
   function loadCoverWithFallback(el, relPath) {
-    var tier = 1;
-    function tryNext() {
-      var url = buildCdnUrl(relPath, tier);
-      if (!url) return;
+    var list = coverCandidates(relPath);
+    var i = 0;
+    (function next() {
+      if (i >= list.length) return; // 全失败：保留渐变色背景
+      var url = list[i++];
       var probe = new Image();
       probe.onload = function () {
         el.style.backgroundImage = 'url(' + url + ')';
         el.style.backgroundColor = '';
         el.style.backgroundBlendMode = '';
       };
-      probe.onerror = function () {
-        tier++;
-        if (tier <= 3) tryNext();
-        // 3 级都失败：保持渐变色背景（color 兜底）
-      };
+      probe.onerror = next;
       probe.src = url;
-    }
-    tryNext();
+    })();
   }
 
   /* ==================== 进入第4层：课程详情 ==================== */
@@ -1388,8 +1423,8 @@
     if (!course) return;
     $('#detail-title').textContent = course.name;
     var coverEl = $('#detail-cover');
-    // 底色兜底（color 渐变），加载成功后用真实封面图替换
-    coverEl.style.background = course.cover || '';
+    // 底色兜底（渐变），加载成功后用真实封面图替换
+    coverEl.style.background = coverGradient(course);
     if (course.coverImg) {
       loadCoverWithFallback(coverEl, course.coverImg);
     }
