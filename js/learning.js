@@ -1029,21 +1029,38 @@
     return _progressCache;
   }
   function saveProgress() {
-    try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(_progressCache)); } catch (e) {}
+    try {
+      // 顺手清掉空课程：读接口不写盘，但历史版本可能留下 {} 条目
+      Object.keys(_progressCache).forEach(function (id) {
+        var set = _progressCache[id];
+        if (!set || typeof set !== 'object' || !Object.keys(set).length) delete _progressCache[id];
+      });
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(_progressCache));
+    } catch (e) {}
   }
+  /* 只读：不存在时返回空对象，绝不写回，避免遍历统计时把空课程灌进存储 */
+  var EMPTY_SET = {};
   function getWatchedSet(courseId) {
     var all = loadProgress();
-    return all[courseId] || (all[courseId] = {});
+    return all[courseId] || EMPTY_SET;
+  }
+  /* 写入用：确保这门课在存储里有自己的对象 */
+  function ensureWatchedSet(courseId) {
+    var all = loadProgress();
+    if (!all[courseId]) all[courseId] = {};
+    return all[courseId];
   }
   function epKey(ep) { return ep.bvid + ':' + (ep.page || 1); }
   function isWatched(courseId, ep) {
     return !!getWatchedSet(courseId)[epKey(ep)];
   }
   function toggleWatched(courseId, ep) {
-    var set = getWatchedSet(courseId);
+    var set = ensureWatchedSet(courseId);
     var k = epKey(ep);
     if (set[k]) { delete set[k]; } else { set[k] = Date.now(); }
     saveProgress();
+    // 首页的进度卡与总进度跟着变，回到第2层时数字是对的
+    refreshProgressHome();
     return !!set[k];
   }
   function countWatched(course) {
@@ -1052,10 +1069,225 @@
     course.episodes.forEach(function (ep) { if (set[epKey(ep)]) n++; });
     return n;
   }
+
+  /* 点进去就记一次：没有记录的直接写入，已有的只刷新时间戳。
+     时间戳存 Date.now()（毫秒），展示时再格式化，所以能精确到秒。 */
+  function markOnPlay(course, ep) {
+    if (!course || !ep) return null;
+    var set = ensureWatchedSet(course.id);
+    var k = epKey(ep);
+    var at = Date.now();
+    var isNew = !set[k];
+    set[k] = at;
+    saveProgress();
+    return { isNew: isNew, at: at };
+  }
+
+  /* 学习时间展示：今天只给时分秒，跨天带日期，跨年带年份 */
+  function fmtStudyTime(ts, withSeconds) {
+    if (!ts) return '';
+    var d = new Date(ts);
+    var now = new Date();
+    var time = pad(d.getHours()) + ':' + pad(d.getMinutes()) + (withSeconds ? ':' + pad(d.getSeconds()) : '');
+    if (d.getFullYear() !== now.getFullYear()) {
+      return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + time;
+    }
+    if (d.toDateString() === now.toDateString()) return '今天 ' + time;
+    return (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + time;
+  }
+
+  /* 卡片里的紧凑写法：当天只给 11:02，早于今天就给 10-23 */
+  function fmtShortTime(ts) {
+    if (!ts) return '';
+    var d = new Date(ts);
+    var now = new Date();
+    if (d.toDateString() === now.toDateString()) return pad(d.getHours()) + ':' + pad(d.getMinutes());
+    return (d.getMonth() + 1) + '-' + d.getDate();
+  }
+
+  /* 标记后同步选集列表的"已学"样式与统计，不重建 DOM，避免丢滚动位置 */
+  function syncEpisodeWatched(course) {
+    if (!course) return;
+    var set = getWatchedSet(course.id);
+    $all('.episode-list').forEach(function (list) {
+      var items = $all('.episode-item', list);
+      items.forEach(function (el, i) {
+        var ep = course.episodes[i];
+        if (!ep) return;
+        el.classList.toggle('is-watched', !!set[epKey(ep)]);
+      });
+    });
+    var sw = $('#detail-stat-watched');
+    if (sw) sw.textContent = countWatched(course);
+  }
   function clearCourseProgress(courseId) {
     var all = loadProgress();
     delete all[courseId];
     saveProgress();
+  }
+
+  /* ==================== 首页课程进度（每门课一条 + 总进度） ==================== */
+  /* 口径统一：按「集」算，已学集数 / 总集数，和详情页的已学数是同一个来源。 */
+  function courseStats(course) {
+    var set = getWatchedSet(course.id);
+    var watched = 0, lastTs = 0;
+    course.episodes.forEach(function (ep) {
+      var ts = Number(set[epKey(ep)]) || 0;
+      if (ts > 0) { watched++; if (ts > lastTs) lastTs = ts; }
+    });
+    var total = course.episodes.length;
+    return {
+      watched: watched,
+      total: total,
+      lastTs: lastTs,
+      pct: total ? Math.round(watched / total * 100) : 0
+    };
+  }
+
+  /* 全部课程按岗位顺序摊平，order 用于排序兜底 */
+  function allCoursesOrdered() {
+    var out = [];
+    Object.keys(LEARNING.courses).forEach(function (roleId) {
+      (LEARNING.courses[roleId] || []).forEach(function (course) {
+        out.push({ course: course, order: out.length });
+      });
+    });
+    return out;
+  }
+
+  /* 最近在学的那门（有已学记录且时间最新的那个集） */
+  function lastStudied() {
+    var latest = null;
+    allCoursesOrdered().forEach(function (it) {
+      var st = courseStats(it.course);
+      if (st.watched && (!latest || st.lastTs > latest.st.lastTs)) {
+        latest = { course: it.course, st: st };
+      }
+    });
+    return latest;
+  }
+
+  function renderProgressCards() {
+    var grid = $('#lc-prog-grid');
+    if (!grid) return;
+    var box = $('#lc-prog');
+
+    var items = allCoursesOrdered().map(function (it) {
+      return { course: it.course, order: it.order, st: courseStats(it.course) };
+    }).filter(function (it) {
+      // 只列学过的课；一门都没开始就整块收起，不留下一个空标题
+      return it.st.watched > 0;
+    });
+
+    if (box) box.hidden = items.length === 0;
+    if (!items.length) { grid.innerHTML = ''; return; }
+
+    // 学过的都带 lastTs，直接按最近学习时间倒序
+    items.sort(function (a, b) { return b.st.lastTs - a.st.lastTs; });
+
+    grid.innerHTML = items.map(function (it) {
+      var c = it.course, st = it.st;
+      var role = getRole(c.roleId);
+      var tint = (role && role.tint) || 'var(--mirage-500)';
+      // 气泡里叫「我是摄影」，卡片上只留岗位名，省出空间给课程名
+      var roleLabel = role ? String(role.name).replace(/^我是/, '') : '课程';
+      return '<button type="button" class="lc-prog-card" data-course="' + c.id + '"' +
+          ' data-started="' + (st.watched ? 1 : 0) + '" style="--tint:' + tint + '">' +
+        '<span class="lc-prog-card-top">' +
+          '<span class="lc-prog-role">' + roleLabel + '</span>' +
+          '<span class="lc-prog-pct">' + (st.watched ? st.pct + '%' : '未开始') + '</span>' +
+        '</span>' +
+        '<span class="lc-prog-name">' + c.name + '</span>' +
+        '<span class="lc-prog-bar"><span class="lc-prog-fill" style="width:' + st.pct + '%"></span></span>' +
+        '<span class="lc-prog-meta">已学 ' + st.watched + ' / ' + st.total + ' 集' +
+          (st.lastTs ? ' · ' + fmtShortTime(st.lastTs) : '') + '</span>' +
+      '</button>';
+    }).join('');
+
+    var note = $('#lc-prog-note');
+    if (note) note.textContent = '共 ' + items.length + ' 门在学';
+  }
+
+  function renderTotal() {
+    var box = $('#lc-total');
+    if (!box) return;
+
+    var total = 0, watched = 0;
+    allCoursesOrdered().forEach(function (it) {
+      var st = courseStats(it.course);
+      total += st.total;
+      watched += st.watched;
+    });
+    var latest = lastStudied();
+    var pct = total ? Math.round(watched / total * 100) : 0;
+
+    var pctEl = $('#lc-total-pct');
+    var fill = $('#lc-total-fill');
+    var bar = $('#lc-total-bar');
+    var sub = $('#lc-total-sub');
+    var go = $('#lc-total-go');
+
+    if (pctEl) pctEl.textContent = pct + '%';
+    if (fill) fill.style.width = pct + '%';
+    if (bar) bar.setAttribute('aria-valuenow', String(pct));
+    if (sub) {
+      sub.textContent = latest
+        ? '已看 ' + watched + ' / ' + total + ' 集 · 最近在学《' + latest.course.name + '》'
+        : '还没有学习记录，先挑一门开始';
+    }
+    if (go) go.textContent = latest ? '继续学习 →' : '去选角色 →';
+    var timeEl = $('#lc-total-time');
+    if (timeEl) {
+      timeEl.textContent = latest ? '最近学习 · ' + fmtStudyTime(latest.st.lastTs, true) : '';
+    }
+    box.classList.toggle('is-empty', !latest);
+  }
+
+  /* 续播点：第一个没学过的集；全学完就停在最后一集 */
+  function resumeIndex(course) {
+    var set = getWatchedSet(course.id);
+    for (var i = 0; i < course.episodes.length; i++) {
+      if (!set[epKey(course.episodes[i])]) return i;
+    }
+    return Math.max(0, course.episodes.length - 1);
+  }
+
+  /* 学过的课直接进播放页接着学；没开始的先进详情页看简介与要求 */
+  function openCourse(course) {
+    if (!course) return;
+    state.roleId = course.roleId;
+    state.courseId = course.id;
+    if (!courseStats(course).watched) { enterDetail(); return; }
+    state.episodeIdx = resumeIndex(course);
+    enterPlayer(course, state.episodeIdx);
+  }
+
+  function refreshProgressHome() {
+    renderProgressCards();
+    renderTotal();
+  }
+
+  function bindProgressHome() {
+    var grid = $('#lc-prog-grid');
+    if (grid) {
+      grid.addEventListener('click', function (e) {
+        var card = e.target.closest ? e.target.closest('.lc-prog-card') : null;
+        if (!card) return;
+        openCourse(getCourse(card.getAttribute('data-course')));
+      });
+    }
+    var go = $('#lc-total-go');
+    if (go) {
+      go.addEventListener('click', function () {
+        var latest = lastStudied();
+        if (!latest) {
+          var bubbles = $('.role-bubbles');
+          if (bubbles) bubbles.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+        openCourse(latest.course);
+      });
+    }
   }
 
   /* ==================== Hero 数据统计 ==================== */
@@ -1191,6 +1423,8 @@
     $all('.lc-view').forEach(function (v) {
       v.classList.toggle('is-active', v.getAttribute('data-view') === viewName);
     });
+    // 回到第2层时按最新进度重排卡片（在其它层标记过已学也会在这里生效）
+    if (viewName === 'role') refreshProgressHome();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -1222,11 +1456,20 @@
       el.style.setProperty('--fy', (6 + Math.random() * 6) + 'px');
       el.style.setProperty('--dur', (6 + Math.random() * 4) + 's');
       el.style.setProperty('--delay', (Math.random() * -8) + 's');
+      var courseCount = (LEARNING.courses[role.id] || []).length;
+      var courseEpisodes = (LEARNING.courses[role.id] || []).reduce(function (n, c) {
+        return n + c.episodes.length;
+      }, 0);
       el.innerHTML =
         '<span class="bubble-badge">' +
           '<svg viewBox="0 0 24 24" aria-hidden="true">' + role.icon + '</svg>' +
         '</span>' +
-        '<span class="bubble-text">' + role.name + '</span>' +
+        '<span class="bubble-text">' +
+          '<span class="bubble-name">' + role.name + '</span>' +
+          '<span class="bubble-meta">' + (courseCount
+            ? '<span class="bm-course">' + courseCount + ' 门课</span><span class="bm-ep"> · ' + courseEpisodes + ' 集</span>'
+            : '课程筹备中') + '</span>' +
+        '</span>' +
         '<span class="bubble-arrow" aria-hidden="true">' +
           '<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>' +
         '</span>';
@@ -1423,8 +1666,10 @@
     if (!course) return;
     $('#detail-title').textContent = course.name;
     var coverEl = $('#detail-cover');
-    // 底色兜底（渐变），加载成功后用真实封面图替换
-    coverEl.style.background = coverGradient(course);
+    // 底色兜底（渐变），加载成功后用真实封面图替换。
+    // 必须只写 background-image：写 background 简写会把 CSS 里的
+    // background-size: cover 重置成 auto，封面就只显示左上角一块。
+    coverEl.style.backgroundImage = coverGradient(course);
     if (course.coverImg) {
       loadCoverWithFallback(coverEl, course.coverImg);
     }
@@ -1552,6 +1797,10 @@
   function playEpisode(course) {
     var ep = course.episodes[state.episodeIdx];
     if (!ep) return;
+    // 点进去就算学过：先落记录（毫秒时间戳），再同步选集样式、已学统计与首页进度
+    markOnPlay(course, ep);
+    syncEpisodeWatched(course);
+    refreshProgressHome();
     $('#player-ep-title').textContent = ep.title;
     $('#player-ep-name').textContent = ep.title;
     // 大课部分分集无简介，给通用引导避免空白
@@ -1599,7 +1848,9 @@
     bindKeyboard();
     bindHeroGlow();
     bindRevealOnScroll();
+    bindProgressHome();
     updateStats();
+    refreshProgressHome();
     showView('role');
   }
 

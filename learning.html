@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>幻象学习中心 —— 北京幻象集团</title>
-  <meta name="description" content="幻象学习中心：面向导演、剪辑、分镜、收音、编剧、运营、前端等角色的免费课程中心。" />
+  <meta name="description" content="幻象学习中心：面向导演、剪辑、分镜、收音、编剧、运营、前端、摄影等岗位的免费实战课程中心，23 门课 573 集。" />
   <link rel="icon" type="image/svg+xml" href="assets/logo-huanxiang.png" />
   <!-- 网络优化：封面默认同站直连；仅在同站缺图时才回落 jsDelivr，故只做便宜 DNS 预取 -->
   <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
@@ -114,23 +114,45 @@
         <div class="reveal mb-pill">
           <span class="pill glass"><span class="dot"></span>幻象学习中心</span>
         </div>
-        <h1 class="lc-title">选择一个<span class="grad">职位角色</span>，开始学习</h1>
+        <h1 class="lc-title">选择一个<span class="grad">职位角色</span>，<br class="lc-br-mobile" />开始学习</h1>
         <p class="lc-subtitle">面向幻象集团各岗位的免费实战课程。选好你的角色，课程会自动匹配。</p>
         <div class="lc-stats">
-          <span class="stat"><span class="stat-num" id="lc-stat-courses">18</span><span>门课程</span></span>
-          <span class="stat-sep">·</span>
-          <span class="stat"><span class="stat-num" id="lc-stat-roles">7</span><span>个岗位</span></span>
-          <span class="stat-sep">·</span>
-          <span class="stat"><span class="stat-num" id="lc-stat-eps">455</span><span>集免费</span></span>
-          <span class="stat-sep">·</span>
-          <span class="stat"><span class="stat-dot"></span><span>持续更新</span></span>
+          <span class="stat"><span class="stat-num" id="lc-stat-courses">23</span><span class="stat-label">门课程</span></span>
+          <span class="stat"><span class="stat-num" id="lc-stat-roles">8</span><span class="stat-label">个岗位</span></span>
+          <span class="stat"><span class="stat-num" id="lc-stat-eps">573</span><span class="stat-label">集免费</span></span>
+          <span class="stat"><span class="stat-dot"></span><span class="stat-label">持续更新</span></span>
         </div>
       </div>
 
-      <!-- 7 个职位角色气泡：由 learning.js 按 LEARNING.roles 渲染（主题色 + SVG 图标 + 漂浮动画） -->
+      <!-- 8 个职位角色气泡：由 learning.js 按 LEARNING.roles 渲染（主题色 + SVG 图标 + 课程数 + 漂浮动画） -->
       <div class="role-bubbles" id="role-bubbles"></div>
 
-      <p class="lc-hint">点击任一角色进入对应课程列表；底部会保留你的学习进度。</p>
+      <p class="lc-hint">点角色看该岗位的全部课程；下面的进度卡片可以直接接着学。</p>
+
+      <!-- 课程进度：只列学过的课，一行两个；一门都没开始则整块隐藏（由 learning.js 渲染） -->
+      <section class="lc-prog" id="lc-prog" aria-labelledby="lc-prog-title">
+        <div class="lc-prog-head">
+          <h2 class="lc-prog-title" id="lc-prog-title">课程进度</h2>
+          <span class="lc-prog-note" id="lc-prog-note"></span>
+        </div>
+        <div class="lc-prog-grid" id="lc-prog-grid"></div>
+      </section>
+
+      <!-- 总进度：放在这一层最底部 -->
+      <section class="lc-total" id="lc-total" aria-labelledby="lc-total-label">
+        <div class="lc-total-top">
+          <span class="lc-total-label" id="lc-total-label">总进度</span>
+          <span class="lc-total-pct" id="lc-total-pct">0%</span>
+        </div>
+        <div class="lc-total-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="lc-total-bar">
+          <span class="lc-total-fill" id="lc-total-fill"></span>
+        </div>
+        <div class="lc-total-foot">
+          <span class="lc-total-sub" id="lc-total-sub">还没有学习记录，先挑一门开始</span>
+          <button type="button" class="lc-total-go" id="lc-total-go">去选角色 →</button>
+        </div>
+        <p class="lc-total-time" id="lc-total-time"></p>
+      </section>
     </section>
 
     <!-- ========== 第3层：课程列表 ========== -->
